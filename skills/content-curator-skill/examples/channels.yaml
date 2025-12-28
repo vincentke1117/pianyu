@@ -1,0 +1,62 @@
+# Content Curator - 频道配置示例
+# 说明: 配置需要监控的YouTube频道和Bilibili UP主
+
+# YouTube频道配置
+youtube:
+  # 配置项说明:
+  # - channel_id: 频道ID (必需，格式: UC...)
+  # - name: 频道名称 (用于标识)
+  # - filters.min_duration: 最小时长过滤 (秒)，默认1800 (30分钟)
+  # - filters.transcript_languages: 字幕语言优先级
+
+  - channel_id: "UCBa659QWEk1AI4Tg--mrJ2A"  # 李永乐老师官方频道
+    name: "李永乐老师"
+    filters:
+      min_duration: 1800  # 30分钟
+      transcript_languages:
+        - "zh-CN"  # 简体中文优先
+        - "zh-TW"
+        - "en"
+
+  - channel_id: "UCIkQ2UG0gtmsr6XzIjygFnw"  # 回形针PaperClip
+    name: "回形针PaperClip"
+    filters:
+      min_duration: 900   # 15分钟
+      transcript_languages: ["zh-CN"]
+
+  - channel_id: "UCdBK7xa2Zv1xXOPJmW5Cxaw"  # 罗翔说刑法
+    name: "罗翔说刑法"
+    filters:
+      min_duration: 1200  # 20分钟
+
+  - channel_id: "UC6ZjTjNjPXlX-zuSn9mP7Mw"  # 毕导
+    name: "毕导"
+    filters:
+      min_duration: 900
+
+# Bilibili UP主配置
+bilibili:
+  # 配置项说明:
+  # - uid: UP主UID (必需)
+  # - name: UP主名称
+  # - filters.min_duration: 最小时长过滤 (秒)，默认不限制
+
+  - uid: 517898783  # 小Lin说
+    name: "小Lin说"
+    filters:
+      min_duration: 1800  # 30分钟
+
+  - uid: 436193060  # 老师好我叫何同学
+    name: "老师好我叫何同学"
+    filters:
+      min_duration: 900   # 15分钟
+
+  - uid: 679615301  # 老番茄
+    name: "老番茄"
+    filters:
+      min_duration: 1800
+
+  - uid: 423895  # 敖厂长
+    name: "敖厂长"
+    filters:
+      min_duration: 1200

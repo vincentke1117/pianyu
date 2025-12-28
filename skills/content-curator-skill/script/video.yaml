@@ -1,0 +1,18 @@
+# 视频配置
+
+videos:
+  - id: "youtube_1"
+    platform: "youtube"
+    url: "https://www.youtube.com/watch?v=0XI_Xt0ci2Y"
+    language: "en"  # 主要语言
+
+  - id: "bilibili_1"
+    platform: "bilibili"
+    url: "https://www.bilibili.com/video/BV1QMSjBREzr/"
+    language: "zh-CN"  # 主要语言
+
+# 配置说明
+# - id: 视频唯一标识符
+# - platform: 视频平台 (youtube/bilibili)
+# - url: 视频链接（已清理跟踪参数）
+# - language: 视频主要语言，用于字幕提取优先级

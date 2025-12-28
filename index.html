@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>片羽 Pian Yu</title>
+    <!-- Google Fonts: Noto Serif SC (Songti equivalent) and Noto Sans SC (Heiti equivalent) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Noto Serif SC"', 'serif'],
+              sans: ['"Noto Sans SC"', 'sans-serif'],
+            },
+            colors: {
+              // Dark Mode (Silent Night)
+              mineral: {
+                900: '#18181b', // Deep background
+                800: '#27272a', // Card background
+                100: '#f4f4f5', // Frost White text
+              },
+              // Light Mode (Rice Paper)
+              paper: {
+                50: '#f9f8f4',  // Rice Paper background
+                100: '#f2efe9', // Card background
+                900: '#1c1917', // Ink Grey text
+              },
+              // Accents
+              gold: {
+                light: '#C5A059', // Dull Gold (Light mode)
+                DEFAULT: '#D4AF37', // Champagne Gold (Dark mode)
+                glow: '#FCD34D',
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-out',
+              'slide-up': 'slideUp 0.3s ease-out',
+              'blob': 'blob 10s infinite',
+              'float': 'float 8s ease-in-out infinite',
+              'sway': 'sway 15s ease-in-out infinite',
+              'sway-delayed': 'sway 18s ease-in-out infinite reverse',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(10px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                '50%': { transform: 'translateY(-20px) rotate(5deg)' },
+              },
+              sway: {
+                 '0%': { transform: 'translate(0, 0) rotate(-5deg)' },
+                 '33%': { transform: 'translate(10px, 20px) rotate(5deg)' },
+                 '66%': { transform: 'translate(-10px, 40px) rotate(-10deg)' },
+                 '100%': { transform: 'translate(0, 0) rotate(-5deg)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #52525b;
+        border-radius: 3px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #3f3f46;
+      }
+      
+      /* Selection Color */
+      ::selection {
+        background: rgba(212, 175, 55, 0.3); /* Gold with opacity */
+        color: inherit;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
+  <body class="bg-paper-50 dark:bg-mineral-900 transition-colors duration-500 ease-in-out antialiased">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

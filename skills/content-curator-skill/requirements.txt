@@ -1,0 +1,25 @@
+# Content Curator 依赖列表
+
+# 必需核心依赖
+anthropic>=0.18.0          # Claude API
+pyyaml>=6.0                # YAML配置解析
+requests>=2.31.0           # HTTP请求
+
+# YouTube处理
+youtube-transcript-api>=0.6.2  # YouTube字幕提取
+google-api-python-client>=2.100.0  # YouTube Data API (可选)
+
+# Bilibili处理
+# 注: Bilibili使用外部API (bibigpt.co)，无需额外库
+
+# 其他工具
+python-dateutil>=2.8.2     # 日期处理
+isodate>=0.6.1            # ISO 8601日期解析
+
+# 可选依赖
+feedparser>=6.0.10        # RSS解析 (YouTube备用方案)
+bilibili-api-python>=16.1.0  # Bilibili官方API (如果需要更复杂功能)
+
+# 开发依赖 (测试用)
+pytest>=7.4.0             # 测试框架
+pytest-cov>=4.1.0         # 测试覆盖率
