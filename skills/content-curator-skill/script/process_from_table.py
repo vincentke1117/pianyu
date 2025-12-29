@@ -166,6 +166,29 @@ def extract_podcast_metadata_with_zhipu(url: str, logger=None) -> dict:
         # 提取封面
         cover_url = metadata.get("og:image", "") or metadata.get("twitter:image", "")
 
+        # 提取发布时间
+        publish_date_raw = (article_data.get("publishedTime", "") or
+                            metadata.get("article:published_time", "") or
+                            metadata.get("datePublished", "") or
+                            article_data.get("date", ""))
+
+        # 转换 ISO 8601 格式为标准日期格式 (YYYY-MM-DD)
+        publish_date = ""
+        if publish_date_raw:
+            try:
+                from datetime import datetime
+                # 尝试解析 ISO 8601 格式 (如: 2025-12-08T03:17:01.834Z)
+                if "T" in publish_date_raw:
+                    # 移除时区信息和微秒
+                    date_part = publish_date_raw.split("T")[0]
+                    # 验证日期格式
+                    datetime.strptime(date_part, "%Y-%m-%d")
+                    publish_date = date_part
+                else:
+                    publish_date = publish_date_raw
+            except Exception:
+                publish_date = publish_date_raw
+
         # 尝试从描述或内容中提取嘉宾信息
         description = metadata.get("description", "") or article_data.get("description", "")
 
@@ -202,6 +225,7 @@ def extract_podcast_metadata_with_zhipu(url: str, logger=None) -> dict:
             "guest": guest,
             "cover_url": cover_url,
             "description": description,
+            "publish_date": publish_date,
         }
 
         if logger:
@@ -213,6 +237,8 @@ def extract_podcast_metadata_with_zhipu(url: str, logger=None) -> dict:
             if guest:
                 logger.info(f"  嘉宾: {guest}")
             logger.info(f"  封面: {cover_url}")
+            if publish_date:
+                logger.info(f"  发布时间: {publish_date}")
 
         return result
 
@@ -393,11 +419,34 @@ def parse_metadata_from_transcript(transcript_file: str, logger=None) -> dict:
 
         metadata = article_data.get("metadata", {})
 
+        # 提取发布时间
+        publish_date_raw = (article_data.get("publishedTime", "") or
+                            metadata.get("article:published_time", "") or
+                            metadata.get("datePublished", "") or
+                            article_data.get("date", ""))
+
+        # 转换 ISO 8601 格式为标准日期格式 (YYYY-MM-DD)
+        publish_date = ""
+        if publish_date_raw:
+            try:
+                # 尝试解析 ISO 8601 格式 (如: 2025-12-08T03:17:01.834Z)
+                if "T" in publish_date_raw:
+                    # 移除时区信息和微秒
+                    date_part = publish_date_raw.split("T")[0]
+                    # 验证日期格式
+                    from datetime import datetime
+                    datetime.strptime(date_part, "%Y-%m-%d")
+                    publish_date = date_part
+                else:
+                    publish_date = publish_date_raw
+            except Exception:
+                publish_date = publish_date_raw
+
         result = {
             "title": metadata.get("og:title", "") or article_data.get("title", ""),
             "author": metadata.get("author", "") or metadata.get("og:article:author", "") or metadata.get("twitter:creator", ""),
             "cover_url": metadata.get("og:image", "") or metadata.get("twitter:image", ""),
-            "publish_date": article_data.get("publishedTime", "") or metadata.get("article:published_time", "")
+            "publish_date": publish_date
         }
 
         if logger:
@@ -926,6 +975,8 @@ def main():
                             processor_result['author'] = zhipu_metadata['author']
                         if zhipu_metadata.get('cover_url'):
                             processor_result['cover_url'] = zhipu_metadata['cover_url']
+                        if zhipu_metadata.get('publish_date'):
+                            processor_result['publish_date'] = zhipu_metadata['publish_date']
 
                 transcript = processor_result.get("subtitles", "")
                 if not transcript or len(transcript.strip()) < 50:

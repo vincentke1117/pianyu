@@ -5,9 +5,10 @@ interface NavbarProps {
   isDark: boolean;
   toggleTheme: () => void;
   onHomeClick: () => void;
+  onSearchClick: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme, onHomeClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme, onHomeClick, onSearchClick }) => {
   return (
     <nav className="fixed top-0 left-0 right-0 h-16 z-50 transition-colors duration-500 backdrop-blur-md border-b 
       dark:bg-mineral-900/80 dark:border-white/10 
@@ -37,8 +38,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, toggleTheme, onHomeClick }) => 
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
-          <button 
-            className="p-2 rounded-full transition-colors dark:hover:bg-white/10 hover:bg-black/5 dark:text-mineral-100 text-paper-900"
+          <button
+            onClick={onSearchClick}
+            className="p-2 rounded-full transition-all duration-300 dark:hover:bg-white/10 hover:bg-black/5 dark:text-mineral-100 text-paper-900 hover:text-gold dark:hover:text-gold"
             aria-label="Search"
           >
             <Search className="w-5 h-5" strokeWidth={1.5} />

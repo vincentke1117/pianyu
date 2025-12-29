@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Gallery from './components/Gallery';
 import Reader from './components/Reader';
 import CopyFeedback from './components/CopyFeedback';
+import SearchDrawer from './components/SearchDrawer';
 import { ARTICLES } from './constants';
 import { useArticles } from './hooks/useArticles';
 import { ViewMode } from './types';
@@ -12,6 +13,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewMode>('gallery');
   const [currentArticleId, setCurrentArticleId] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // 动态加载文章数据（优先使用本地JSON）
   const { articles, loading, error } = useArticles();
@@ -46,6 +48,10 @@ const App: React.FC = () => {
     setShowCopyFeedback(true);
   };
 
+  // Search Logic
+  const handleSearchOpen = () => setIsSearchOpen(true);
+  const handleSearchClose = () => setIsSearchOpen(false);
+
   const currentArticle = displayArticles.find(a => a.id === currentArticleId);
 
   // 加载状态显示
@@ -64,10 +70,11 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen relative font-sans">
-      <Navbar 
-        isDark={isDark} 
-        toggleTheme={toggleTheme} 
-        onHomeClick={handleHomeClick} 
+      <Navbar
+        isDark={isDark}
+        toggleTheme={toggleTheme}
+        onHomeClick={handleHomeClick}
+        onSearchClick={handleSearchOpen}
       />
 
       <main>
@@ -87,9 +94,16 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <CopyFeedback 
-        isVisible={showCopyFeedback} 
-        onHide={() => setShowCopyFeedback(false)} 
+      <CopyFeedback
+        isVisible={showCopyFeedback}
+        onHide={() => setShowCopyFeedback(false)}
+      />
+
+      <SearchDrawer
+        isOpen={isSearchOpen}
+        onClose={handleSearchClose}
+        articles={displayArticles}
+        onArticleClick={handleArticleClick}
       />
     </div>
   );
