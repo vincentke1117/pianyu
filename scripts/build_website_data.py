@@ -149,6 +149,8 @@ def clean_content_for_website(rewritten_content: str) -> str:
 
 def get_article_type(platform: str) -> str:
     """根据平台确定文章类型"""
+    if not platform:
+        return 'article'
     platform_lower = platform.lower()
     if 'youtube' in platform_lower or 'bilibili' in platform_lower:
         return 'video'
