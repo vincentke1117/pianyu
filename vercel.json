@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm run fetch-data && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }
