@@ -410,7 +410,7 @@ def main():
     with open(typescript_path, 'w', encoding='utf-8') as f:
         f.write("// 自动生成，请勿手动修改\n")
         f.write("// 生成时间: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n\n")
-        f.write("import { Article } from '../types';\n\n")
+        f.write("import { Article } from '../../types';\n\n")
         f.write("export const ARTICLES: Article[] = ")
         json.dump(articles, f, ensure_ascii=False, indent=2)
         f.write(" as const;\n")

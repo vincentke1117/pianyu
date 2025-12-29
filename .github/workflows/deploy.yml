@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Update Data
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:  # 允许手动触发
 
 jobs:
-  build-and-deploy:
+  update-data:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,25 +33,10 @@ jobs:
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
         run: npm run fetch-data
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Build site
-        run: npm run build
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/data/articles.json src/data/articles.ts
+          git diff --staged --quiet || git commit -m "chore: 自动更新数据"
+          git push

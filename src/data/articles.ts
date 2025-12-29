@@ -1,7 +1,7 @@
 // 自动生成，请勿手动修改
-// 生成时间: 2025-12-29 16:18:44
+// 生成时间: 2025-12-29 16:24:43
 
-import { Article } from '../types';
+import { Article } from '../../types';
 
 export const ARTICLES: Article[] = [
   {
