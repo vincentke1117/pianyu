@@ -3,6 +3,9 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  schedule:
+    # 每3天 UTC 0:00 (北京时间 8:00) 运行
+    - cron: '0 0 */3 * *'
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -28,9 +31,7 @@ jobs:
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_BASE_ID: ${{ secrets.FEISHU_BASE_ID }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
-        run: |
-          cd scripts
-          python build_website_data.py
+        run: npm run fetch-data
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
