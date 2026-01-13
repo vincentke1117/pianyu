@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Article, ArticleType } from '../types';
+import { useDebouncedValue } from './useDebouncedValue';
 
 export interface SearchFilters {
   query: string;
@@ -37,6 +38,9 @@ export const useArticleSearchAndFilter = (articles: Article[]): UseArticleSearch
     selectedType: 'all',
     selectedAuthor: null,
   });
+
+  // 对搜索关键词添加 300ms 防抖，减少不必要的计算
+  const debouncedQuery = useDebouncedValue(filters.query, 300);
 
   // 更新函数
   const setQuery = useCallback((query: string) => {
@@ -87,9 +91,9 @@ export const useArticleSearchAndFilter = (articles: Article[]): UseArticleSearch
   // 筛选文章
   const filteredArticles = useMemo(() => {
     return articles.filter(article => {
-      // 1. 关键词搜索
-      if (filters.query) {
-        const query = filters.query.toLowerCase();
+      // 1. 关键词搜索（使用防抖后的值）
+      if (debouncedQuery) {
+        const query = debouncedQuery.toLowerCase();
         const matchesTitle = article.title?.toLowerCase().includes(query) ?? false;
         const matchesAuthor = article.author?.toLowerCase().includes(query) ?? false;
         const matchesContent = article.content?.toLowerCase().includes(query) ?? false;
@@ -123,7 +127,7 @@ export const useArticleSearchAndFilter = (articles: Article[]): UseArticleSearch
 
       return true;
     });
-  }, [articles, filters]);
+  }, [articles, debouncedQuery, filters.selectedTag, filters.selectedType, filters.selectedAuthor]);
 
   const resultCount = filteredArticles.length;
 

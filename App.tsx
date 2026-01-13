@@ -1,111 +1,110 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Gallery from './components/Gallery';
-import Reader from './components/Reader';
 import CopyFeedback from './components/CopyFeedback';
-import SearchDrawer from './components/SearchDrawer';
+import LoadingSpinner from './components/LoadingSpinner';
+import GallerySkeleton from './components/GallerySkeleton';
+import SkipLink from './components/SkipLink';
+import { AppProvider, useApp } from './context/AppContext';
 import { ARTICLES } from './constants';
 import { useArticles } from './hooks/useArticles';
-import { ViewMode } from './types';
 
-const App: React.FC = () => {
-  const [isDark, setIsDark] = useState(true);
-  const [view, setView] = useState<ViewMode>('gallery');
-  const [currentArticleId, setCurrentArticleId] = useState<string | null>(null);
-  const [showCopyFeedback, setShowCopyFeedback] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+// 代码分割：懒加载大型组件
+const Reader = lazy(() => import('./components/Reader'));
+const SearchDrawer = lazy(() => import('./components/SearchDrawer'));
 
-  // 动态加载文章数据（优先使用本地JSON）
-  const { articles, loading, error } = useArticles();
+/**
+ * App 内部组件（使用 Context）
+ */
+const AppContent: React.FC = () => {
+  const { state, actions } = useApp();
+  const { articles, loading } = useArticles();
+
   // 如果动态加载失败，使用静态常量作为降级
   const displayArticles = articles.length > 0 ? articles : ARTICLES;
 
-  // Theme Handling
+  // 主题处理
   useEffect(() => {
     const html = document.documentElement;
-    if (isDark) {
+    if (state.isDark) {
       html.classList.add('dark');
     } else {
       html.classList.remove('dark');
     }
-  }, [isDark]);
+  }, [state.isDark]);
 
-  const toggleTheme = () => setIsDark(!isDark);
-
-  // Navigation Logic
-  const handleArticleClick = (id: string) => {
-    setCurrentArticleId(id);
-    setView('reader');
-  };
-
-  const handleHomeClick = () => {
-    setView('gallery');
-    setCurrentArticleId(null);
-  };
-
-  // Copy Feedback Logic
-  const handleCopyFragment = () => {
-    setShowCopyFeedback(true);
-  };
-
-  // Search Logic
-  const handleSearchOpen = () => setIsSearchOpen(true);
-  const handleSearchClose = () => setIsSearchOpen(false);
-
-  const currentArticle = displayArticles.find(a => a.id === currentArticleId);
+  // 获取当前文章
+  const currentArticle = displayArticles.find(a => a.id === state.currentArticleId);
 
   // 加载状态显示
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-paper-50 dark:bg-mineral-900">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-gold border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-sm dark:text-gray-400 text-gray-500 font-serif">
-            从飞书加载珍藏...
-          </p>
-        </div>
-      </div>
-    );
+    return <GallerySkeleton />;
   }
 
   return (
     <div className="min-h-screen relative font-sans">
+      {/* Skip Link for accessibility */}
+      <SkipLink />
+
       <Navbar
-        isDark={isDark}
-        toggleTheme={toggleTheme}
-        onHomeClick={handleHomeClick}
-        onSearchClick={handleSearchOpen}
+        isDark={state.isDark}
+        toggleTheme={actions.toggleTheme}
+        onHomeClick={actions.navigateBack}
+        onSearchClick={actions.openSearch}
       />
 
-      <main>
-        {view === 'gallery' && (
+      <main id="main-content">
+        <div className={state.view === 'gallery' ? 'animate-fade-in' : 'hidden'}>
           <Gallery
             articles={displayArticles}
-            onArticleClick={handleArticleClick}
+            onArticleClick={actions.navigateToArticle}
+            selectedType={state.galleryFilters.selectedType}
+            selectedAuthor={state.galleryFilters.selectedAuthor}
+            onTypeChange={actions.setSelectedType}
+            onAuthorChange={actions.setSelectedAuthor}
           />
-        )}
+        </div>
 
-        {view === 'reader' && currentArticle && (
-          <Reader 
-            article={currentArticle} 
-            onBack={handleHomeClick}
-            onCopyFragment={handleCopyFragment}
-          />
+        {state.view === 'reader' && currentArticle && (
+          <div className="animate-slide-up">
+            <Suspense fallback={<LoadingSpinner />}>
+              <Reader
+                article={currentArticle}
+                allArticles={displayArticles}
+                onBack={actions.navigateBack}
+                onArticleClick={actions.navigateToArticle}
+                onCopyFragment={actions.showCopyFeedback}
+              />
+            </Suspense>
+          </div>
         )}
       </main>
 
       <CopyFeedback
-        isVisible={showCopyFeedback}
-        onHide={() => setShowCopyFeedback(false)}
+        isVisible={state.showCopyFeedback}
+        onHide={actions.hideCopyFeedback}
       />
 
-      <SearchDrawer
-        isOpen={isSearchOpen}
-        onClose={handleSearchClose}
-        articles={displayArticles}
-        onArticleClick={handleArticleClick}
-      />
+      <Suspense fallback={null}>
+        <SearchDrawer
+          isOpen={state.isSearchOpen}
+          onClose={actions.closeSearch}
+          articles={displayArticles}
+          onArticleClick={actions.navigateToArticle}
+        />
+      </Suspense>
     </div>
+  );
+};
+
+/**
+ * App 根组件（提供 Context）
+ */
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 };
 
