@@ -90,10 +90,10 @@ export const useArticleSearchAndFilter = (articles: Article[]): UseArticleSearch
       // 1. 关键词搜索
       if (filters.query) {
         const query = filters.query.toLowerCase();
-        const matchesTitle = article.title.toLowerCase().includes(query);
-        const matchesAuthor = article.author.toLowerCase().includes(query);
-        const matchesContent = article.content.toLowerCase().includes(query);
-        const matchesNuggets = article.nuggets.some(n => n.toLowerCase().includes(query));
+        const matchesTitle = article.title?.toLowerCase().includes(query) ?? false;
+        const matchesAuthor = article.author?.toLowerCase().includes(query) ?? false;
+        const matchesContent = article.content?.toLowerCase().includes(query) ?? false;
+        const matchesNuggets = article.nuggets?.some(n => n?.toLowerCase().includes(query)) ?? false;
 
         if (!matchesTitle && !matchesAuthor && !matchesContent && !matchesNuggets) {
           return false;

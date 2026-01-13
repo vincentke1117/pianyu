@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Article, ArticleType } from '../types';
 import { Calendar, User } from 'lucide-react';
 import Banner from './Banner';
@@ -16,6 +16,11 @@ const CATEGORY_CONFIG = {
 
 const Gallery: React.FC<GalleryProps> = ({ articles, onArticleClick }) => {
   const [selectedType, setSelectedType] = useState<ArticleType | 'all'>('all');
+
+  // 确保页面初始滚动到顶部
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // 过滤文章
   const filteredArticles = useMemo(() => {
